@@ -36,13 +36,22 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist')
 	},
 
-	plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin(),
-	new CopyWebpackPlugin([
-		{
-			from: path.join(__dirname, 'src/static'),
-			to: path.join(__dirname, 'dist')
-		}
-	])],
+	plugins: [
+		new webpack.ProgressPlugin(), new HtmlWebpackPlugin({
+			title: 'Webpack 4 Starter',
+			template: './src/static/index.html',
+			inject: true,
+			minify: {
+				removeComments: true,
+				collapseWhitespace: false
+			}
+		}),
+		new CopyWebpackPlugin([
+			{
+				from: path.join(__dirname, 'src/static'),
+				to: path.join(__dirname, 'dist')
+			}
+		])],
 
 	module: {
 		rules: [
@@ -63,7 +72,18 @@ module.exports = {
 						]
 					]
 				}
-			}
+			},
+			{
+				test: /\.s[ac]ss$/i,
+				use: [
+					// Creates `style` nodes from JS strings
+					'style-loader',
+					// Translates CSS into CommonJS
+					'css-loader',
+					// Compiles Sass to CSS
+					'sass-loader',
+				],
+			},
 		]
 	},
 

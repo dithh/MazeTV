@@ -1,0 +1,38 @@
+body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background-color:#f7f7f7;
+}
+.button{
+    background-color:#9188ed;
+    color:white;
+    padding:0.5rem 1rem;
+    border:none;
+    border-radius:5%;
+    margin-left:1rem;
+    &:hover{
+        background-color:#46477e;
+    }
+}
+.input{
+    border:none;
+    background-color:white;
+    padding:0.5rem 1rem 0.5rem 2rem;
+}
+
+.shows-container{
+    margin-top:1rem;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap:1rem;
+}
+
+.card{
+    border: 1px solid #e3e6f0;
+    border-radius:0.35rem;
+    background:white;
+    padding:2rem;
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.03);
+}
