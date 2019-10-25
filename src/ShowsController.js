@@ -7,6 +7,9 @@ export default class ShowsController {
     }
 
     handleFetchShows(showName) {
-        this.model.fetchShows(showName).then(response => response.json().then((data) => this.view.displayShows(data)))
+        this.model.fetchShows(showName).then(response => {
+            console.log(response);
+            this.view.displayShows(response)
+        })
     }
 }

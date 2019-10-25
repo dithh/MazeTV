@@ -13,7 +13,7 @@ export default class ShowsModel {
     // }
 
     fetchShows(showName) {
-        return fetch(`${this.baseUrl}${showName}`)
+        return fetch(`${this.baseUrl}${showName}`).then(response => response.json())
     }
     filterShowsByYear(year) {
 
