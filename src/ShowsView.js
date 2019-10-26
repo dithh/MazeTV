@@ -10,8 +10,7 @@ export default class View {
 
     displayShows(shows) {
         const airingYearsArray = [];
-        this.cleanShowsContainer();
-        this.cleanYearsSelect();
+
         if (this.sortSelect.value) {
             shows.sort((a, b) => {
                 if (this.sortSelect.value === "releaseYear") {
@@ -106,7 +105,5 @@ export default class View {
         this.yearSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
         this.statusSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
     }
-    addSortShowsListener(handler) {
-        this.sortSelect.addEventListener("change", () => handler(this.sortSelect.value))
-    }
+
 }

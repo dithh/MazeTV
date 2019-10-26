@@ -10,11 +10,14 @@ export default class ShowsController {
         this.model.fetchShows(showName).then(shows => {
             console.log(shows);
             if (shows) {
+                this.view.cleanShowsContainer();
+                this.view.cleanYearsSelect();
                 this.view.displayShows(shows);
             }
         })
     }
     handleFilterShows(year, status) {
+        this.view.cleanShowsContainer();
         this.view.displayFilteredShows(this.model.getFilteredShows(year, status));
     }
 }
