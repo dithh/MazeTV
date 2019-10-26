@@ -105,5 +105,8 @@ export default class View {
         this.yearSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
         this.statusSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
     }
+    addSortShowsListener(handler) {
+        this.sortSelect.addEventListener("change", handler);
+    }
 
 }

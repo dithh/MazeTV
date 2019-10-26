@@ -4,6 +4,7 @@ export default class ShowsController {
         this.view = view;
         this.view.addFetchShowsListener(this.handleFetchShows.bind(this))
         this.view.addFilterShowsListener(this.handleFilterShows.bind(this));
+        this.view.addSortShowsListener(this.handleSortShows.bind(this))
 
     }
     handleFetchShows(showName) {
@@ -19,5 +20,8 @@ export default class ShowsController {
     handleFilterShows(year, status) {
         this.view.cleanShowsContainer();
         this.view.displayFilteredShows(this.model.getFilteredShows(year, status));
+    }
+    handleSortShows(event) {
+        this.view.displayFilteredShows(this.model.getSortedShows(event.target.value))
     }
 }
