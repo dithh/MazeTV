@@ -11,9 +11,25 @@
 
 <body>
     <h1>MazeTV shows finder</h1>
-    <div class="controls">
-        <input type="text" class="input" name="show-name" id="show-name-input" placeholder="Search...">
+    <div class="controls" id="controls">
+        <input type="search" class="input" name="show-name" id="show-name-input" placeholder="Search...">
         <button type="button" id="search-button" class="button">Search</button>
+        <label for="status">Status:</label>
+        <select id="status-select" name="status">
+            <option value="">All</option>
+            <option value="Running">Running</option>
+            <option value="Finished">Finished</option>
+        </select>
+        <label for="year">Release year:</label>
+        <select id="year-select" name="year">
+            <option value="">All</option>
+        </select>
+        <label for="sort">Sort by:</label>
+        <select id="sort-select" name="sort">
+            <option value="releaseYear">Release date</option>
+            <option value="Title">Title</option>
+        </select>
+        <!-- <div id="checkboxes"></div> -->
     </div>
     <div class="shows-container" id="shows-container">
 
