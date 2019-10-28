@@ -1,14 +1,22 @@
 export default class ShowsModel {
     constructor() {
+        this.pageToFetch = 1;
         this.baseUrl = `http://omdbapi.com/?apikey=2e06cfa&type=series&s=`;
     }
 
     async fetchShows(showName) {
-        const data = await fetch(`${this.baseUrl}${showName}`);
+        this.pageToFetch = 1;
+        const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
         const response = await data.json();
         console.log(response)
         if (response.Response === "True") {
             this.shows = response.Search;
+            if (this.shows.length === 10) {
+                this.pageToFetch = 2;
+                const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
+                const response = await data.json();
+                this.shows = this.shows.concat(response.Search);
+            }
             const promises = this.shows.map(async show => {
                 const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
                 const data = await fetch(`${detailsUrl}${show.imdbID}`);
@@ -23,7 +31,7 @@ export default class ShowsModel {
                 show.description = details[index].Plot ? details[index].Plot.substring(0, 100) : "No data";
                 show.awards = details[index].Awards != "N/A" ? true : false;
             })
-            this.showsToDisplay = [...this.shows];
+            this.showsToDisplay = this.shows.slice(0, 12);
             return this.showsToDisplay;
         }
         else {
