@@ -22,6 +22,7 @@ export default class ShowsController {
         this.view.displayFilteredShows(this.model.getFilteredShows(year, status));
     }
     handleSortShows(event) {
+        this.view.cleanShowsContainer();
         this.view.displayFilteredShows(this.model.getSortedShows(event.target.value))
     }
 }

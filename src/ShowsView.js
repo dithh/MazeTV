@@ -39,7 +39,6 @@ export default class View {
     }
 
     displayFilteredShows(shows) {
-        this.cleanShowsContainer();
         shows.forEach(show => {
             this.renderShowCard(show)
         })
