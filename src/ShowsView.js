@@ -58,6 +58,7 @@ export default class View {
 
 
     renderShowCard(show) {
+        console.log("show to render", show)
         const card = document.createElement("div");
         const title = document.createElement("h2");
         const status = document.createElement("p");
@@ -67,7 +68,6 @@ export default class View {
         const image = new Image(250, 250);
         const description = document.createElement("p");
         const imageSrc = show.Poster !== "N/A" ? show.Poster : "../src/static/assets/500x735.png";
-        const runtimeText = show.Year ? show.Year : 'Airing date unkown'
         card.classList.add("card");
         title.classList.add("card__title");
         status.classList.add("card__details");
@@ -75,12 +75,16 @@ export default class View {
         runtime.classList.add("card__details");
         releaseYear.classList.add("card__details");
         description.classList.add("card__description");
+        if (show.awards) {
+            card.classList.add("card--winner")
+        }
         image.src = imageSrc;
         title.innerText = show.Title;
         status.innerText = `Status: ${show.status}`;
-        rating.innerText = show.Rating ? show.rating.average : "Average rating unknown";
+        rating.innerText = `Rating:${show.rating}`
         releaseYear.innerText = `Released: ${show.releaseYear}`;
-        runtime.innerText = `Runtime: ${runtimeText} `;
+        runtime.innerText = `Runtime: ${show.runtime} `;
+        description.innerText = show.description;
         card.append(image);
         card.appendChild(title);
         card.appendChild(status)

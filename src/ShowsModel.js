@@ -1,24 +1,34 @@
 export default class ShowsModel {
     constructor() {
-        this.baseUrl = `http://omdbapi.com/?apikey=2e06cfa&type=series&s=`
+        this.baseUrl = `http://omdbapi.com/?apikey=2e06cfa&type=series&s=`;
     }
 
-    fetchShows(showName) {
-        return fetch(`${this.baseUrl}${showName}`).then(response => response.json().then(data => {
-            ///Check if the search was successful - sadly Response  is string not a Boolean 
-            if (data.Response === "True") {
-                this.shows = data.Search;
-                this.showsToDisplay = [...this.shows]
-                this.shows.forEach(show => {
-                    show.releaseYear = show.Year ? show.Year.substring(0, 4) : "Unknown";
-                    show.status = show.Year[4] === "–" && show.Year.length === 5 ? "Running" : "Finished";
-                })
-                return this.showsToDisplay;
-            }
-            else {
-                alert(data.Error);
-            }
-        }))
+    async fetchShows(showName) {
+        const data = await fetch(`${this.baseUrl}${showName}`);
+        const response = await data.json();
+        console.log(response)
+        if (response.Response === "True") {
+            this.shows = response.Search;
+            const promises = this.shows.map(async show => {
+                const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
+                const data = await fetch(`${detailsUrl}${show.imdbID}`);
+                return await data.json();
+            })
+            const details = await Promise.all(promises);
+            this.shows.forEach((show, index) => {
+                show.releaseYear = details[index].Year ? details[index].Year.substring(0, 4) : "No data";
+                show.status = details[index].Year[4] === "–" && details[index].Year.length === 5 ? "Running" : "Finished";
+                show.runtime = details[index].Runtime ? details[index].Runtime : "No data";
+                show.rating = details[index].imdbRating ? details[index].imdbRating : "No data";
+                show.description = details[index].Plot ? details[index].Plot.substring(0, 100) : "No data";
+                show.awards = details[index].Awards != "N/A" ? true : false;
+            })
+            this.showsToDisplay = [...this.shows];
+            return this.showsToDisplay;
+        }
+        else {
+            alert(response.Error);
+        }
     }
     getFilteredShows(year, status) {
         let filteredShows = [...this.shows];
@@ -50,6 +60,12 @@ export default class ShowsModel {
                 break;
             case "titleDescending":
                 sortedShows.sort((a, b) => b.Title.localeCompare(a.Title))
+                break;
+            case "ratingAscending":
+                sortedShows.sort((a, b) => a.rating - b.rating)
+                break;
+            case "ratingDescending":
+                sortedShows.sort((a, b) => b.rating - a.rating);
             default:
                 break;
         }
