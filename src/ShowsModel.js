@@ -8,7 +8,6 @@ export default class ShowsModel {
         this.pageToFetch = 1;
         const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
         const response = await data.json();
-        console.log(response)
         if (response.Response === "True") {
             this.shows = response.Search;
             if (this.shows.length === 10) {
@@ -28,7 +27,7 @@ export default class ShowsModel {
                 show.status = details[index].Year[4] === "–" && details[index].Year.length === 5 ? "Running" : "Finished";
                 show.runtime = details[index].Runtime ? details[index].Runtime : "No data";
                 show.rating = details[index].imdbRating ? details[index].imdbRating : "No data";
-                show.description = details[index].Plot ? details[index].Plot.substring(0, 100) : "No data";
+                show.description = details[index].Plot ? details[index].Plot.substring(0, 97).padEnd(100, ".") : "No data";
                 show.awards = details[index].Awards != "N/A" ? true : false;
             })
             this.showsToDisplay = this.shows.slice(0, 12);
@@ -41,7 +40,7 @@ export default class ShowsModel {
     getFilteredShows(year, status) {
         let filteredShows = [...this.shows];
         if (year) {
-            filteredShows = filteredShows.filter(show => show.releaseYear === year);
+            filteredShows = filteredShows.filter(show => show.releaseYear === year)
         }
         if (status) {
             filteredShows = filteredShows.filter(show => show.status === status)

@@ -21,7 +21,7 @@ export default class View {
                 }
             })
         }
-        shows.forEach(show => {
+        shows.forEach((show) => {
             if (show.Year) {
                 const showReleaseYear = show.Year.substring(0, 4);
                 if (!airingYearsArray.includes(showReleaseYear)) {
