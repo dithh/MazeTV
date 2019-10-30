@@ -3,24 +3,13 @@ export default class View {
         this.showsContainer = document.querySelector("#shows-container");
         this.input = document.querySelector("#show-name-input");
         this.searchButton = document.querySelector("#search-button");
-        this.statusSelect = document.querySelector("#status-select");
         this.yearSelect = document.querySelector("#year-select");
         this.sortSelect = document.querySelector("#sort-select");
+        this.ratingSelect = document.querySelector("#rating-select");
     }
 
     displayShows(shows) {
         const airingYearsArray = [];
-
-        if (this.sortSelect.value) {
-            shows.sort((a, b) => {
-                if (this.sortSelect.value === "releaseYear") {
-                    return a[this.sortSelect.value] - b[this.sortSelect.value];
-                }
-                else {
-                    return a.Title.localeCompare(b[this.sortSelect.value])
-                }
-            })
-        }
         shows.forEach((show) => {
             if (show.Year) {
                 const showReleaseYear = show.Year.substring(0, 4);
@@ -58,7 +47,6 @@ export default class View {
 
 
     renderShowCard(show) {
-        console.log("show to render", show)
         const card = document.createElement("div");
         const title = document.createElement("h2");
         const status = document.createElement("p");
@@ -105,11 +93,15 @@ export default class View {
         )
     }
     addFilterShowsListener(handler) {
-        this.yearSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
-        this.statusSelect.addEventListener("change", () => handler(this.yearSelect.value, this.statusSelect.value));
+        this.yearSelect.addEventListener("change", () => handler(this.yearSelect.value, this.ratingSelect.value));
+        this.ratingSelect.addEventListener("change", () => handler(this.yearSelect.value, this.ratingSelect.value))
     }
     addSortShowsListener(handler) {
         this.sortSelect.addEventListener("change", handler);
     }
+    addLoadNextPageListener(handler) {
+        window.addEventListener("scroll", handler);
+    }
+
 
 }
