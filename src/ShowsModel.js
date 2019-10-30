@@ -90,17 +90,7 @@ export default class ShowsModel {
     }
 
     getFilteredShows(year, rating) {
-        let filteredShows = [...this.shows];
-        if (year) {
-            this.yearFilter = year;
-            filteredShows = this.filterShowsByYear(filteredShows, year);
-        }
-        if (rating) {
-            this.ratingFilter = rating;
-            filteredShows = this.filterShowsByRating(filteredShows, rating);
-        }
-        const showsToDisplay = [...filteredShows];
-        return showsToDisplay;
+        return this.filterShows(year, rating);
     }
 
     filterShowsByYear(shows, year) {
@@ -123,6 +113,18 @@ export default class ShowsModel {
             case "4":
                 filteredShows = filteredShows.filter(show => parseFloat(show.rating) > 8.9)
                 break;
+        }
+        return filteredShows;
+    }
+    filterShows(year, rating) {
+        let filteredShows = [...this.shows];
+        if (year) {
+            this.yearFilter = year;
+            filteredShows = this.filterShowsByYear(filteredShows, year);
+        }
+        if (rating) {
+            this.ratingFilter = rating;
+            filteredShows = this.filterShowsByRating(filteredShows, rating);
         }
         return filteredShows;
     }
