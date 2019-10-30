@@ -130,7 +130,10 @@ export default class ShowsModel {
     getSortedShows(sortBy) {
         let sortedShows = [...this.shows]
         if (this.yearFilter) {
-            sortedShows = sortedShows.filter(show => show.year === this.yearFilter);
+            console.log("blabla");
+            console.log(this.yearFilter);
+            sortedShows = sortedShows.filter(show => show.releaseYear == this.yearFilter);
+            console.log(sortedShows);
         }
         if (this.ratingFilter) {
             sortedShows = this.filterShowsByRating(sortedShows, this.ratingFilter);
