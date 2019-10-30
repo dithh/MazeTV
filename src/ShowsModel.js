@@ -1,7 +1,7 @@
 export default class ShowsModel {
     constructor() {
         this.pageToFetch = 1;
-        this.baseUrl = `http://omdbapi.com/?apikey=bc1354b7&type=series&s=`;
+        this.baseUrl = `http://omdbapi.com/?apikey=2e06cfa&type=series&s=`;
     }
 
     async fetchShows(showName) {
@@ -19,7 +19,7 @@ export default class ShowsModel {
                 this.shows = this.shows.concat(response.Search);
             }
             const promises = this.shows.map(async show => {
-                const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
+                const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
                 const data = await fetch(`${detailsUrl}${show.imdbID}`);
                 return await data.json();
             })
@@ -27,8 +27,7 @@ export default class ShowsModel {
             this.shows.forEach((show, index) => {
                 this.fetchShowDetails(show, index, details);
             })
-            this.showsToDisplay = this.shows.slice(0, 12);
-            return this.showsToDisplay;
+            return this.shows.slice(0, 12);
         }
         else {
             alert(response.Error);
@@ -36,31 +35,27 @@ export default class ShowsModel {
     }
 
     async fetchNextPage() {
-        const firstIndexToReturn = this.showsToDisplay.length;
+        const firstIndexToReturn = 12;
 
         if (this.shows.length >= this.totalResults - 1) {
-            if (this.shows.length != this.showsToDisplay.length) {
-                this.showsToDisplay = this.shows;
-                if (this.yearFilter) {
-                    this.showsToDisplay = this.showsToDisplay.filter(show => show.year === this.yearFilter);
-                }
-                if (this.ratingFilter) {
-                    this.showsToDisplay = this.filterShowsByRating(this.showsToDisplay, this.ratingFilter);
-                }
-                return this.showsToDisplay.slice(firstIndexToReturn);
+            let showsToDisplay;
+            showsToDisplay = [...this.shows];
+            if (this.yearFilter) {
+                showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
             }
-            else {
-                return alert('No more results')
+            if (this.ratingFilter) {
+                showsToDisplay = this.filterShowsByRating(showsToDisplay, this.ratingFilter);
             }
+            return showsToDisplay.slice(firstIndexToReturn);
         }
         this.pageToFetch += 1;
         const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
         const response = await data.json();
         if (response.Response === "True") {
-            console.log("true");
             const shows = response.Search;
+            let showsToDisplay = [...this.shows];
             const promises = shows.map(async show => {
-                const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
+                const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
                 const data = await fetch(`${detailsUrl}${show.imdbID}`);
                 return await data.json();
             })
@@ -69,16 +64,13 @@ export default class ShowsModel {
                 this.fetchShowDetails(show, index, details);
             })
             this.shows = this.shows.concat(shows);
-            this.showsToDisplay = this.showsToDisplay.concat(this.shows.slice(12, 24))
             if (this.yearFilter) {
-                console.log(this.yearFilter);
-                this.showsToDisplay = this.showsToDisplay.filter(show => show.year === this.yearFilter);
+                showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
             }
             if (this.ratingFilter) {
-                console.log(this.ratingFilter);
-                this.showsToDisplay = this.filterShowsByRating(this.showsToDisplay, this.ratingFilter);
+                showsToDisplay = this.filterShowsByRating(showsToDisplay, this.ratingFilter);
             }
-            return this.showsToDisplay.slice(firstIndexToReturn, firstIndexToReturn + 12);
+            return showsToDisplay.slice(firstIndexToReturn, firstIndexToReturn + 12);
 
         }
     }
@@ -101,15 +93,20 @@ export default class ShowsModel {
         let filteredShows = [...this.shows];
         if (year) {
             this.yearFilter = year;
-            filteredShows = filteredShows.filter(show => show.releaseYear === year)
+            filteredShows = this.filterShowsByYear(filteredShows, year);
         }
         if (rating) {
             this.ratingFilter = rating;
             filteredShows = this.filterShowsByRating(filteredShows, rating);
         }
-        this.showsToDisplay = [...filteredShows];
-        return this.showsToDisplay;
+        const showsToDisplay = [...filteredShows];
+        return showsToDisplay;
     }
+
+    filterShowsByYear(shows, year) {
+        return shows.filter(show => show.releaseYear === year)
+    }
+
     filterShowsByRating(shows, rating) {
         let filteredShows = [...shows];
         this.ratingFilter = rating;
@@ -131,7 +128,13 @@ export default class ShowsModel {
     }
 
     getSortedShows(sortBy) {
-        const sortedShows = this.showsToDisplay ? this.showsToDisplay : this.shows;
+        let sortedShows = [...this.shows]
+        if (this.yearFilter) {
+            sortedShows = sortedShows.filter(show => show.year === this.yearFilter);
+        }
+        if (this.ratingFilter) {
+            sortedShows = this.filterShowsByRating(sortedShows, this.ratingFilter);
+        }
         this.sortBy = sortBy;
         switch (sortBy) {
             case "releaseYearAscending":
@@ -155,6 +158,7 @@ export default class ShowsModel {
                 break;
             case "ratingDescending":
                 sortedShows.sort((a, b) => b.rating - a.rating);
+                break;
             default:
                 break;
         }
