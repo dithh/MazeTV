@@ -41,6 +41,12 @@ export default class ShowsModel {
         if (this.shows.length >= this.totalResults - 1) {
             if (this.shows.length != this.showsToDisplay.length) {
                 this.showsToDisplay = this.shows;
+                if (this.yearFilter) {
+                    this.showsToDisplay = this.showsToDisplay.filter(show => show.year === this.yearFilter);
+                }
+                if (this.ratingFilter) {
+                    this.showsToDisplay = this.filterShowsByRating(this.showsToDisplay, this.ratingFilter);
+                }
                 return this.showsToDisplay.slice(firstIndexToReturn);
             }
             else {
@@ -51,6 +57,7 @@ export default class ShowsModel {
         const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
         const response = await data.json();
         if (response.Response === "True") {
+            console.log("true");
             const shows = response.Search;
             const promises = shows.map(async show => {
                 const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
@@ -66,6 +73,10 @@ export default class ShowsModel {
             if (this.yearFilter) {
                 console.log(this.yearFilter);
                 this.showsToDisplay = this.showsToDisplay.filter(show => show.year === this.yearFilter);
+            }
+            if (this.ratingFilter) {
+                console.log(this.ratingFilter);
+                this.showsToDisplay = this.filterShowsByRating(this.showsToDisplay, this.ratingFilter);
             }
             return this.showsToDisplay.slice(firstIndexToReturn, firstIndexToReturn + 12);
 
@@ -101,6 +112,7 @@ export default class ShowsModel {
     }
     filterShowsByRating(shows, rating) {
         let filteredShows = [...shows];
+        this.ratingFilter = rating;
         switch (rating) {
             case "1":
                 filteredShows = filteredShows.filter(show => parseFloat(show.rating) <= 3.9)
@@ -120,7 +132,7 @@ export default class ShowsModel {
 
     getSortedShows(sortBy) {
         const sortedShows = this.showsToDisplay ? this.showsToDisplay : this.shows;
-        console.log(sortBy);
+        this.sortBy = sortBy;
         switch (sortBy) {
             case "releaseYearAscending":
                 sortedShows.sort((a, b) => {
