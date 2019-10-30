@@ -6,6 +6,7 @@ export default class ShowsModel {
 
     async fetchShows(showName) {
         this.pageToFetch = 1;
+        this.pagesToDisplay = 1;
         this.showName = showName;
         const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
         const response = await data.json();
@@ -35,7 +36,8 @@ export default class ShowsModel {
     }
 
     async fetchNextPage() {
-        const firstIndexToReturn = 12;
+        this.pagesToDisplay += 1;
+        const firstIndexToReturn = 12 * (this.pagesToDisplay - 1);
 
         if (this.shows.length >= this.totalResults - 1) {
             let showsToDisplay;
@@ -126,7 +128,7 @@ export default class ShowsModel {
             this.ratingFilter = rating;
             filteredShows = this.filterShowsByRating(filteredShows, rating);
         }
-        return filteredShows;
+        return filteredShows.slice(0, this.pagesToDisplay * 12);
     }
 
     getSortedShows(sortBy) {
