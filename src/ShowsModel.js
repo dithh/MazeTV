@@ -36,6 +36,7 @@ export default class ShowsModel {
     }
 
     async fetchNextPage() {
+        console.log("fetchnext page")
         this.pagesToDisplay += 1;
         const firstIndexToReturn = 12 * (this.pagesToDisplay - 1);
 
@@ -50,6 +51,7 @@ export default class ShowsModel {
             }
             return showsToDisplay.slice(firstIndexToReturn);
         }
+
         while (this.shows.length < this.pagesToDisplay * 12) {
             this.pageToFetch += 1;
             const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
@@ -68,6 +70,8 @@ export default class ShowsModel {
                 this.shows = this.shows.concat(shows);
             }
             let showsToDisplay = [...this.shows];
+            console.log(this.yearFilter);
+            console.log(this.ratingFilter);
             if (this.yearFilter) {
                 showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
             }
@@ -125,10 +129,14 @@ export default class ShowsModel {
         if (year) {
             this.yearFilter = year;
             filteredShows = this.filterShowsByYear(filteredShows, year);
+        } else {
+            this.yearFilter = "";
         }
         if (rating) {
             this.ratingFilter = rating;
             filteredShows = this.filterShowsByRating(filteredShows, rating);
+        } else {
+            this.ratingFilter = "";
         }
         return filteredShows.slice(0, this.pagesToDisplay * 12);
     }
