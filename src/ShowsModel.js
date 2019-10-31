@@ -50,22 +50,24 @@ export default class ShowsModel {
             }
             return showsToDisplay.slice(firstIndexToReturn);
         }
-        this.pageToFetch += 1;
-        const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
-        const response = await data.json();
-        if (response.Response === "True") {
-            const shows = response.Search;
+        while (this.shows.length < this.pagesToDisplay * 12) {
+            this.pageToFetch += 1;
+            const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
+            const response = await data.json();
+            if (response.Response === "True") {
+                const shows = response.Search;
+                const promises = shows.map(async show => {
+                    const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
+                    const data = await fetch(`${detailsUrl}${show.imdbID}`);
+                    return await data.json();
+                })
+                const details = await Promise.all(promises);
+                shows.forEach((show, index) => {
+                    this.fetchShowDetails(show, index, details);
+                })
+                this.shows = this.shows.concat(shows);
+            }
             let showsToDisplay = [...this.shows];
-            const promises = shows.map(async show => {
-                const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
-                const data = await fetch(`${detailsUrl}${show.imdbID}`);
-                return await data.json();
-            })
-            const details = await Promise.all(promises);
-            shows.forEach((show, index) => {
-                this.fetchShowDetails(show, index, details);
-            })
-            this.shows = this.shows.concat(shows);
             if (this.yearFilter) {
                 showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
             }
