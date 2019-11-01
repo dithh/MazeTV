@@ -77,11 +77,12 @@ export default class ShowsModel {
                     this.shows = this.shows.concat(shows);
 
                     let showsToDisplay = this.filterShows(this.yearFilter, this.ratingFilter);
+
                     return showsToDisplay.slice(firstIndexToReturn, firstIndexToReturn + 12);
                 }
             }
             catch (e) {
-                console.log(error);
+                console.log(e);
             }
         }
     }
@@ -146,16 +147,6 @@ export default class ShowsModel {
 
     getSortedShows(sortBy) {
         let sortedShows = this.filterShows(this.yearFilter, this.ratingFilter);
-
-        // if (this.yearFilter) {
-        //     console.log("blabla");
-        //     console.log(this.yearFilter);
-        //     sortedShows = sortedShows.filter(show => show.releaseYear == this.yearFilter);
-        //     console.log(sortedShows);
-        // }
-        // if (this.ratingFilter) {
-        //     sortedShows = this.filterShowsByRating(sortedShows, this.ratingFilter);
-        // }
         this.sortBy = sortBy;
         switch (sortBy) {
             case "releaseYearAscending":
