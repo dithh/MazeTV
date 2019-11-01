@@ -89,7 +89,12 @@ export default class View {
     }
 
     addFetchShowsListener(handler) {
-        this.searchButton.addEventListener("click", () => handler(this.getShowName())
+        this.searchButton.addEventListener("click", () => {
+            handler(this.getShowName());
+            console.log("resettetetee")
+            this.sortSelect.value = "";
+            this.ratingSelect.value = "";
+        }
         )
     }
     addFilterShowsListener(handler) {
