@@ -36,7 +36,6 @@ export default class ShowsModel {
     }
 
     async fetchNextPage() {
-        console.log("fetchnext page")
         this.pagesToDisplay += 1;
         const firstIndexToReturn = 12 * (this.pagesToDisplay - 1);
 
@@ -69,15 +68,7 @@ export default class ShowsModel {
                 })
                 this.shows = this.shows.concat(shows);
             }
-            let showsToDisplay = [...this.shows];
-            console.log(this.yearFilter);
-            console.log(this.ratingFilter);
-            if (this.yearFilter) {
-                showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
-            }
-            if (this.ratingFilter) {
-                showsToDisplay = this.filterShowsByRating(showsToDisplay, this.ratingFilter);
-            }
+            let showsToDisplay = this.filterShows(this.yearFilter, this.ratingFilter);
             return showsToDisplay.slice(firstIndexToReturn, firstIndexToReturn + 12);
 
         }
@@ -142,16 +133,17 @@ export default class ShowsModel {
     }
 
     getSortedShows(sortBy) {
-        let sortedShows = [...this.shows]
-        if (this.yearFilter) {
-            console.log("blabla");
-            console.log(this.yearFilter);
-            sortedShows = sortedShows.filter(show => show.releaseYear == this.yearFilter);
-            console.log(sortedShows);
-        }
-        if (this.ratingFilter) {
-            sortedShows = this.filterShowsByRating(sortedShows, this.ratingFilter);
-        }
+        let sortedShows = this.filterShows(this.yearFilter, this.ratingFilter);
+
+        // if (this.yearFilter) {
+        //     console.log("blabla");
+        //     console.log(this.yearFilter);
+        //     sortedShows = sortedShows.filter(show => show.releaseYear == this.yearFilter);
+        //     console.log(sortedShows);
+        // }
+        // if (this.ratingFilter) {
+        //     sortedShows = this.filterShowsByRating(sortedShows, this.ratingFilter);
+        // }
         this.sortBy = sortBy;
         switch (sortBy) {
             case "releaseYearAscending":
