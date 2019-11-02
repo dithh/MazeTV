@@ -97,6 +97,12 @@ export default class View {
         return this.searchInput.value
     }
 
+    cleanNoMoreResultsWarning() {
+        while (this.warningContainer.lastChild) {
+            this.warningContainer.removeChild(this.warningContainer.lastChild);
+        }
+    }
+
     addFetchShowsListener(handler) {
         this.searchButton.addEventListener("click", () => {
             handler(this.getShowName());
