@@ -12,14 +12,17 @@ export default class ShowsModel {
         try {
             const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
             const response = await data.json();
-            if (response.Response === "True") {
-                this.shows = response.Search;
-                this.totalResults = response.totalResults;
+            // sadly it is a string not a bool.
+            const { Search, totalResults, Response } = response;
+            if (Response === "True") {
+                this.shows = Search;
+                this.totalResults = totalResults;
                 if (this.shows.length < this.totalResults) {
                     this.pageToFetch = 2;
                     const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
                     const response = await data.json();
-                    this.shows = this.shows.concat(response.Search);
+                    const { Search } = response;
+                    this.shows = this.shows.concat(Search);
                 }
                 const promises = this.shows.map(async show => {
                     const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
@@ -37,7 +40,7 @@ export default class ShowsModel {
             }
         }
         catch (e) {
-            console.log(error);
+            console.log(e);
         }
     }
 
@@ -68,10 +71,10 @@ export default class ShowsModel {
             try {
                 const data = await fetch(`${this.baseUrl}${this.showName}&page=${this.pageToFetch}`);
                 const response = await data.json();
-
+                const { Response, Search } = response;
                 // sadly it is a string not a bool.
-                if (response.Response === "True") {
-                    const shows = response.Search;
+                if (Response === "True") {
+                    const shows = Search;
                     const promises = shows.map(async show => {
                         const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
                         const data = await fetch(`${detailsUrl}${show.imdbID}`);
