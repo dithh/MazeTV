@@ -1,7 +1,7 @@
 export default class ShowsModel {
     constructor() {
         this.pageToFetch = 1;
-        this.baseUrl = `http://omdbapi.com/?apikey=bc1354b7&type=series&s=`;
+        this.baseUrl = `https://omdbapi.com/?apikey=bc1354b7&type=series&s=`;
     }
 
     async fetchShows(showName) {
@@ -25,7 +25,7 @@ export default class ShowsModel {
                     this.shows = this.shows.concat(Search);
                 }
                 const promises = this.shows.map(async show => {
-                    const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
+                    const detailsUrl = "https://omdbapi.com/?apikey=bc1354b7&i=";
                     const data = await fetch(`${detailsUrl}${show.imdbID}`);
                     return await data.json();
                 })
@@ -76,7 +76,7 @@ export default class ShowsModel {
                 if (Response === "True") {
                     const shows = Search;
                     const promises = shows.map(async show => {
-                        const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
+                        const detailsUrl = "https://omdbapi.com/?apikey=bc1354b7&i=";
                         const data = await fetch(`${detailsUrl}${show.imdbID}`);
                         return await data.json();
                     })
