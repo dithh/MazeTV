@@ -1,15 +1,27 @@
-# 🚀 Welcome to your new awesome project!
+# Shows Finder
 
-This project has been created using **webpack scaffold**, you can now run
+App for searching your favorite tv show using OMDb API.
+Project built with plain JS utilizng MVC.
 
+
+# Running
+
+Clone the repository using your favorite way
+For example 
+
+```bash 
+https://github.com/dithh/MazeTV.git
 ```
-npm run build
+
+Be sure to install your dependencies using 
+```bash
+npm install
 ```
 
-or
-
+Finally you can enjoy the project using
+```bash
+npm start
 ```
-yarn build
-```
+Webpack serves the project on http://localhost:8080
 
-to bundle your application
+# Enjoy!
