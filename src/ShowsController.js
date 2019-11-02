@@ -11,7 +11,6 @@ export default class ShowsController {
     }
     handleFetchShows(showName) {
         this.model.fetchShows(showName).then(shows => {
-            console.log(shows);
             this.view.cleanShowsContainer();
             this.view.cleanYearsSelect();
             this.view.displayShows(shows);

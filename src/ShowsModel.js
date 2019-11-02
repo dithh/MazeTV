@@ -1,13 +1,14 @@
 export default class ShowsModel {
     constructor() {
         this.pageToFetch = 1;
-        this.baseUrl = `http://omdbapi.com/?apikey=2e06cfa&type=series&s=`;
+        this.baseUrl = `http://omdbapi.com/?apikey=bc1354b7&type=series&s=`;
     }
 
     async fetchShows(showName) {
         this.pageToFetch = 1;
         this.pagesToDisplay = 1;
         this.showName = showName;
+        this.isResultsOver = false;
         try {
             const data = await fetch(`${this.baseUrl}${showName}&page=${this.pageToFetch}`);
             const response = await data.json();
@@ -21,7 +22,7 @@ export default class ShowsModel {
                     this.shows = this.shows.concat(response.Search);
                 }
                 const promises = this.shows.map(async show => {
-                    const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
+                    const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
                     const data = await fetch(`${detailsUrl}${show.imdbID}`);
                     return await data.json();
                 })
@@ -45,15 +46,21 @@ export default class ShowsModel {
         const firstIndexToReturn = 12 * (this.pagesToDisplay - 1);
 
         if (this.shows.length >= this.totalResults - 1) {
-            let showsToDisplay;
-            showsToDisplay = [...this.shows];
-            if (this.yearFilter) {
-                showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
+            if (!this.isResultsOver) {
+                let showsToDisplay;
+                this.isResultsOver = true;
+                showsToDisplay = [...this.shows];
+                if (this.yearFilter) {
+                    showsToDisplay = showsToDisplay.filter(show => show.year === this.yearFilter);
+                }
+                if (this.ratingFilter) {
+                    showsToDisplay = this.filterShowsByRating(showsToDisplay, this.ratingFilter);
+                }
+                return showsToDisplay.slice(firstIndexToReturn)
             }
-            if (this.ratingFilter) {
-                showsToDisplay = this.filterShowsByRating(showsToDisplay, this.ratingFilter);
+            else {
+                return;
             }
-            return showsToDisplay.slice(firstIndexToReturn);
         }
 
         while (this.shows.length < this.pagesToDisplay * 12) {
@@ -66,7 +73,7 @@ export default class ShowsModel {
                 if (response.Response === "True") {
                     const shows = response.Search;
                     const promises = shows.map(async show => {
-                        const detailsUrl = "http://omdbapi.com/?apikey=2e06cfa&i=";
+                        const detailsUrl = "http://omdbapi.com/?apikey=bc1354b7&i=";
                         const data = await fetch(`${detailsUrl}${show.imdbID}`);
                         return await data.json();
                     })

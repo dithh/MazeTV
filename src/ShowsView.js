@@ -1,30 +1,39 @@
 export default class View {
     constructor() {
         this.showsContainer = document.querySelector("#shows-container");
-        this.input = document.querySelector("#show-name-input");
+        this.searchInput = document.querySelector("#show-name-input");
         this.searchButton = document.querySelector("#search-button");
         this.yearSelect = document.querySelector("#year-select");
         this.sortSelect = document.querySelector("#sort-select");
         this.ratingSelect = document.querySelector("#rating-select");
+        this.warningContainer = document.querySelector("#warning-container")
     }
 
     displayShows(shows) {
-        const airingYearsArray = [];
-        shows.forEach((show) => {
-            if (show.Year) {
-                const showReleaseYear = show.Year.substring(0, 4);
-                if (!airingYearsArray.includes(showReleaseYear)) {
-                    airingYearsArray.push(showReleaseYear);
+        if (shows) {
+            const airingYearsArray = [];
+            shows.forEach((show) => {
+                if (show.Year) {
+                    const showReleaseYear = show.Year.substring(0, 4);
+                    if (!airingYearsArray.includes(showReleaseYear)) {
+                        airingYearsArray.push(showReleaseYear);
+                    }
                 }
-            }
-            this.renderShowCard(show);
-        })
-        airingYearsArray.sort((a, b) => a - b).forEach(year => {
-            const option = document.createElement("option");
-            option.value = year;
-            option.innerText = year
-            this.yearSelect.appendChild(option);
-        })
+                this.renderShowCard(show);
+            })
+            airingYearsArray.sort((a, b) => a - b).forEach(year => {
+                const option = document.createElement("option");
+                option.value = year;
+                option.innerText = year
+                this.yearSelect.appendChild(option);
+            })
+        }
+        else if (!this.warningContainer.lastChild) {
+            const h1 = document.createElement("h1");
+            h1.innerText = "No more Results";
+            this.warningContainer.append(h1);
+        }
+
     }
 
     displayFilteredShows(shows) {
@@ -85,15 +94,22 @@ export default class View {
     }
 
     getShowName() {
-        return this.input.value
+        return this.searchInput.value
     }
 
     addFetchShowsListener(handler) {
         this.searchButton.addEventListener("click", () => {
             handler(this.getShowName());
-            console.log("resettetetee")
             this.sortSelect.value = "";
             this.ratingSelect.value = "";
+        }
+        )
+        this.searchInput.addEventListener("keypress", (event) => {
+            if (event.keyCode == 13) {
+                handler(this.getShowName());
+                this.sortSelect.value = "";
+                this.ratingSelect.value = "";
+            }
         }
         )
     }
@@ -105,7 +121,10 @@ export default class View {
         this.sortSelect.addEventListener("change", handler);
     }
     addLoadNextPageListener(handler) {
-        window.addEventListener("scroll", handler);
+        window.addEventListener("scroll", () => {
+            this.sortSelect.value = ""
+            handler()
+        });
     }
 
 
